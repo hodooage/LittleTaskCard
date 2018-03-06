@@ -8,6 +8,11 @@ public class Aim {
     public String aimName;
     private int aimImageId;
 
+    public Aim(String aimName,int aimImageId){
+        this.aimName=aimName;
+        this.aimImageId=aimImageId;
+    }
+
     public String getAimName() {
         return aimName;
     }

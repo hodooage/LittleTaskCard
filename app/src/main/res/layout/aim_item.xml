@@ -13,7 +13,9 @@
         <ImageView
             android:id="@+id/aim_image"
             android:layout_width="match_parent"
-            android:layout_height="200dp"/>
+            android:layout_height="222dp"
+            android:layout_margin="4dp"
+            android:scaleType="fitXY" />
 
         <TextView
             android:id="@+id/aim_name"
