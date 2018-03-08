@@ -23,6 +23,8 @@ public class AddAimActivity extends AppCompatActivity {
 
     private int importance=0;
 
+    private int loveImage=R.drawable.ho;
+
     private int[] defaultPictures={
             R.drawable.r1,
             R.drawable.r2,
@@ -80,6 +82,15 @@ public class AddAimActivity extends AppCompatActivity {
                 randomImage();
             }
         });
+
+        //点击提交在表中插入新的数据
+        mBinding.submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createAim();
+                MainActivity.startAction(AddAimActivity.this);
+            }
+        });
     }
 
 
@@ -121,12 +132,16 @@ public class AddAimActivity extends AppCompatActivity {
         Random random=new Random();
         int index=random.nextInt(pictures.length);
         Glide.with(this).load(pictures[index]).into(mBinding.imageView);
+        loveImage=pictures[index];
     }
 
     //创建目标
-    public Aim createAim(String aimName, int aimImage){
-
-        return null;
+    public void createAim(){
+        Aim aim=new Aim();
+        aim.setAimName(mBinding.something.getText().toString());
+        aim.setAimImageId(loveImage);
+        aim.setImportance(importance);
+        aim.save();
     }
 
     public static void  startAction(Context context){

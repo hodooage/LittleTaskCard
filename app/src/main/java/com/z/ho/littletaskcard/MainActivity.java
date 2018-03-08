@@ -1,6 +1,9 @@
 package com.z.ho.littletaskcard;
 
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,7 +15,11 @@ import com.z.ho.littletaskcard.adapter.AimAdapter;
 import com.z.ho.littletaskcard.databinding.ActivityMainBinding;
 import com.z.ho.littletaskcard.entity.Aim;
 
+import org.litepal.crud.DataSupport;
+import org.litepal.tablemanager.Connector;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -20,22 +27,22 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding mBinding;
 
     private Aim[] aims={
-            new Aim("r1",R.drawable.r1),
-            new Aim("r2",R.drawable.r2),
-            new Aim("r3",R.drawable.r3),
-            new Aim("r4",R.drawable.r4),
-            new Aim("r5",R.drawable.r5),
-            new Aim("r6",R.drawable.r6),
-            new Aim("r7",R.drawable.r7),
-            new Aim("r8",R.drawable.r8),
-            new Aim("sr1",R.drawable.sr1),
-            new Aim("sr2",R.drawable.sr2),
-            new Aim("sr3",R.drawable.sr3),
-            new Aim("sr4",R.drawable.sr4),
-            new Aim("sr5",R.drawable.sr5),
-            new Aim("ssr1",R.drawable.ssr1),
-            new Aim("ssr2",R.drawable.ssr2),
-            new Aim("ssr3",R.drawable.ssr3),
+            new Aim("背十个单词",R.drawable.r1,0),
+            new Aim("r2",R.drawable.r2,0),
+            new Aim("r3",R.drawable.r3,0),
+            new Aim("r4",R.drawable.r4,0),
+            new Aim("r5",R.drawable.r5,0),
+            new Aim("r6",R.drawable.r6,0),
+            new Aim("r7",R.drawable.r7,0),
+            new Aim("r8",R.drawable.r8,0),
+            new Aim("sr1",R.drawable.sr1,1),
+            new Aim("sr2",R.drawable.sr2,1),
+            new Aim("sr3",R.drawable.sr3,1),
+            new Aim("sr4",R.drawable.sr4,1),
+            new Aim("sr5",R.drawable.sr5,1),
+            new Aim("ssr1",R.drawable.ssr1,2),
+            new Aim("ssr2",R.drawable.ssr2,2),
+            new Aim("ssr3",R.drawable.ssr3,2),
     };
     private List<Aim> aimList=new ArrayList<>();
 
@@ -55,33 +62,63 @@ public class MainActivity extends AppCompatActivity {
 
         mBinding= DataBindingUtil.setContentView(this,R.layout.activity_main);
 
+        //初始化数据
         initAims();
 
         GridLayoutManager layoutManager=new GridLayoutManager(this,1);
 
         mBinding.recycleView.setLayoutManager(layoutManager);
 
+        //设置适配器
+        setRecycleView();
+
+        //设置监听事件
+        initListener();
+
+    }
+
+    //向适配器中添加数据
+    private void initAims(){
+        aimList.clear();
+
+        //生成随机测试数据
+//        for (int i=0;i<16;i++){
+//            Random random=new Random();
+//            int index=random.nextInt(aims.length);
+//            aimList.add(aims[index]);
+//        }
+
+        //读取本地数据库中的数据
+        Connector.getDatabase();
+        aimList= DataSupport.findAll(Aim.class);
+        Collections.reverse(aimList);
+    }
+
+    private void setRecycleView(){
         aimAdapter=new AimAdapter(aimList);
-
         mBinding.recycleView.setAdapter(aimAdapter);
+    }
 
+    private void initListener(){
         mBinding.floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AddAimActivity.startAction(MainActivity.this);
             }
         });
+
+        mBinding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initAims();
+                setRecycleView();
+                mBinding.swipeRefresh.setRefreshing(false);
+            }
+        });
     }
 
-    private void initAims(){
-        aimList.clear();
-        for (int i=0;i<16;i++){
-            Random random=new Random();
-            int index=random.nextInt(aims.length);
-            aimList.add(aims[index]);
-        }
+    public static void  startAction(Context context){
+        Intent intent=new Intent(context,MainActivity.class);
+        context.startActivity(intent);
     }
-
-
-
 }

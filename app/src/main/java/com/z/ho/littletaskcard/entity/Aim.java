@@ -1,16 +1,24 @@
 package com.z.ho.littletaskcard.entity;
 
+import org.litepal.crud.DataSupport;
+
 /**
  * Created by Administrator on 2018/3/3 0003.
  */
 
-public class Aim {
-    public String aimName;
+public class Aim extends DataSupport {
+    private String aimName;
     private int aimImageId;
+    private int importance;
 
-    public Aim(String aimName,int aimImageId){
+    public Aim(){
+
+    }
+
+    public Aim(String aimName,int aimImageId,int importance){
         this.aimName=aimName;
         this.aimImageId=aimImageId;
+        this.importance=importance;
     }
 
     public String getAimName() {
@@ -27,5 +35,13 @@ public class Aim {
 
     public void setAimImageId(int aimImageId) {
         this.aimImageId = aimImageId;
+    }
+
+    public int getImportance() {
+        return importance;
+    }
+
+    public void setImportance(int importance) {
+        this.importance = importance;
     }
 }

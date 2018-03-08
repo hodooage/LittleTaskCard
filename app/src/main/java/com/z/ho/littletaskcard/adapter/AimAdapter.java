@@ -1,6 +1,9 @@
 package com.z.ho.littletaskcard.adapter;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,10 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.z.ho.littletaskcard.R;
 import com.z.ho.littletaskcard.entity.Aim;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
@@ -26,7 +32,7 @@ public class AimAdapter extends RecyclerView.Adapter<AimAdapter.ViewHolder> {
 
     static class ViewHolder extends  RecyclerView.ViewHolder{
         CardView cardView;
-        ImageView aim_image;
+        ImageView aim_image,aim_importance_image;
         TextView aim_name;
 
         public ViewHolder(View itemView) {
@@ -34,6 +40,7 @@ public class AimAdapter extends RecyclerView.Adapter<AimAdapter.ViewHolder> {
             cardView= ( CardView ) itemView;
             aim_name=itemView.findViewById(R.id.aim_name);
             aim_image=itemView.findViewById(R.id.aim_image);
+            aim_importance_image=itemView.findViewById(R.id.aim_importance_image);
         }
     }
 
@@ -47,20 +54,65 @@ public class AimAdapter extends RecyclerView.Adapter<AimAdapter.ViewHolder> {
             mContext=parent.getContext();
         }
         View view= LayoutInflater.from(mContext).inflate(R.layout.aim_item,parent,false);
-        return new ViewHolder(view);
+        final ViewHolder holder= new ViewHolder(view);
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                int position=holder.getAdapterPosition();
+                Toast.makeText(mContext, mAimList.get(position).getAimName(), Toast.LENGTH_SHORT).show();
+                showDialog(position);
+                return true;
+            }
+        });
+
+
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Aim aim=mAimList.get(position);
-        holder.aim_name.setText(aim.aimName);
+        holder.aim_name.setText(aim.getAimName());
         Glide.with(mContext).load(aim.getAimImageId()).into(holder.aim_image);
-
+        switch (aim.getImportance()){
+            case 0:
+                holder.aim_importance_image.setImageResource(R.drawable.heart1);
+                break;
+            case 1:
+                holder.aim_importance_image.setImageResource(R.drawable.heart2);
+                break;
+            case 2:
+                holder.aim_importance_image.setImageResource(R.drawable.heart3);
+                break;
+        }
     }
 
 
     @Override
     public int getItemCount() {
         return mAimList.size();
+    }
+
+    public void showDialog(final int position){
+        AlertDialog.Builder alertDialog=new AlertDialog.Builder(mContext);
+        alertDialog.setIcon(R.drawable.warning);
+        alertDialog.setTitle("删除确认");
+        alertDialog.setMessage("确定完成任务了吗？");
+        alertDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(mContext, "点击了"+position, Toast.LENGTH_SHORT).show();
+                if(mAimList.get(position).isSaved()){
+                    mAimList.get(position).delete();
+                }
+            }
+        });
+        alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        alertDialog.show();
     }
 }
