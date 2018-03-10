@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
     <dbname value="aimRepertory"></dbname>
-    <version value='1'></version>
+    <version value='3'></version>
 
     <list>
         <mapping class="com.z.ho.littletaskcard.entity.Aim"></mapping>
+        <mapping class="com.z.ho.littletaskcard.entity.My"></mapping>
     </list>
 </litepal>

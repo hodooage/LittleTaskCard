@@ -66,6 +66,16 @@
         android:layout_marginBottom="15dp"
         android:text="HODOO "
         android:textColor="#fff" />
+
+    <ImageButton
+        android:id="@+id/userCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relativeLayout"
+        android:layout_alignLeft="@+id/floatingActionButton"
+        android:layout_alignStart="@+id/floatingActionButton"
+        android:layout_margin="@dimen/x4"
+        android:background="@drawable/user_center" />
 </RelativeLayout>
 
 

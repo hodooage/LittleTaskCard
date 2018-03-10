@@ -10,6 +10,7 @@ public class Aim extends DataSupport {
     private String aimName;
     private int aimImageId;
     private int importance;
+    private int state;
 
     public Aim(){
 
@@ -43,5 +44,13 @@ public class Aim extends DataSupport {
 
     public void setImportance(int importance) {
         this.importance = importance;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

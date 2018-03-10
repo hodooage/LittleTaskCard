@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.z.ho.littletaskcard.R;
 import com.z.ho.littletaskcard.entity.Aim;
+import com.z.ho.littletaskcard.entity.My;
 
 import org.litepal.crud.DataSupport;
 
@@ -96,15 +97,34 @@ public class AimAdapter extends RecyclerView.Adapter<AimAdapter.ViewHolder> {
     public void showDialog(final int position){
         AlertDialog.Builder alertDialog=new AlertDialog.Builder(mContext);
         alertDialog.setIcon(R.drawable.warning);
-        alertDialog.setTitle("删除确认");
+        alertDialog.setTitle("完成确认");
         alertDialog.setMessage("确定完成任务了吗？");
         alertDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(mContext, "点击了"+position, Toast.LENGTH_SHORT).show();
-                if(mAimList.get(position).isSaved()){
-                    mAimList.get(position).delete();
+                Aim currentAim=mAimList.get(position);
+
+                //更改任务卡的状态
+                if(currentAim.isSaved()){
+                    currentAim.setState(1);
+                    currentAim.save();
                 }
+
+                //增加我的爱心值
+                My my=DataSupport.findFirst(My.class);
+                if(null==my){
+                    my=new My();
+                    my.setMyName("小可爱");
+                    my.setToDefault("myHeart");
+                    my.setMyHeart(my.getMyHeart()+currentAim.getImportance()+1);
+                    my.save();
+                }else{
+                    my.setMyHeart(my.getMyHeart()+currentAim.getImportance()+1);
+                    my.save();
+                }
+
+
             }
         });
         alertDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {

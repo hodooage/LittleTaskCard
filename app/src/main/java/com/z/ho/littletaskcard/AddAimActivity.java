@@ -141,6 +141,7 @@ public class AddAimActivity extends AppCompatActivity {
         aim.setAimName(mBinding.something.getText().toString());
         aim.setAimImageId(loveImage);
         aim.setImportance(importance);
+        aim.setState(0);
         aim.save();
     }
 
